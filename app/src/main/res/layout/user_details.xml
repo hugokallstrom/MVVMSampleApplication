@@ -1,0 +1,30 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.hugo.mvvmsampleapplication.view.viewmodel.UserDetailsViewModel"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/repositories_list"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:visibility="@{viewModel.repoListVisibility}"
+            tools:listitem="@layout/item_repo"
+            />
+
+        <ProgressBar
+            style="@style/AppTheme.ProgressBar"
+            android:id="@+id/progress_indicator"
+            app:visibility="@{viewModel.progressVisibility}"/>
+
+    </RelativeLayout>
+</layout>
