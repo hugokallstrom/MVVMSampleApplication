@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hugo on 1/26/16.
+ * A POJO representing the JSON data of a search response witch is fetched from {@link GitHubService}.
  */
 public class SearchResponse {
     @SerializedName("total_count")
@@ -17,9 +17,29 @@ public class SearchResponse {
     @SerializedName("items")
     private List<User> users = new ArrayList<User>();
 
-    private SearchResponse() {}
+    public SearchResponse() {}
 
     public List<User> getUsers() {
         return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public boolean isIncompleteResults() {
+        return incompleteResults;
+    }
+
+    public void setIncompleteResults(boolean incompleteResults) {
+        this.incompleteResults = incompleteResults;
     }
 }

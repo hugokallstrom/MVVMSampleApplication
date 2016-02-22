@@ -1,7 +1,7 @@
-package com.hugo.mvvmsampleapplication.model.network;
+package com.hugo.mvvmsampleapplication.features;
 
 /**
- * Created by hugo on 1/29/16.
+ * Default subscriber class implemented in ViewModels.
  */
 public class DefaultSubscriber<T> extends rx.Subscriber<T> {
     @Override public void onCompleted() {

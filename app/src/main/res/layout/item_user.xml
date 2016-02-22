@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.hugo.mvvmsampleapplication.view.viewmodel.UserViewModel" />
+            type="com.hugo.mvvmsampleapplication.features.searchuser.UserViewModel" />
     </data>
 
 
@@ -26,8 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
-            android:orientation="horizontal"
-            android:onClick="@{viewModel.onClickUser}">
+            android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"

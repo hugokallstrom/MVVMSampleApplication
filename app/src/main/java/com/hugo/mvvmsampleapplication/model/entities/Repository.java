@@ -1,9 +1,10 @@
 package com.hugo.mvvmsampleapplication.model.entities;
 
 import com.google.gson.annotations.SerializedName;
+import com.hugo.mvvmsampleapplication.model.network.GitHubService;
 
 /**
- * Created by hugo on 1/22/16.
+ * A POJO representing the JSON data of a repository witch is fetched from {@link GitHubService}.
  */
 public class Repository {
 

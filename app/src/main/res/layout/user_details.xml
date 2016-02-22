@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.hugo.mvvmsampleapplication.view.viewmodel.UserDetailsViewModel"/>
+            type="com.hugo.mvvmsampleapplication.features.userdetails.UserDetailsViewModel"/>
     </data>
 
     <RelativeLayout

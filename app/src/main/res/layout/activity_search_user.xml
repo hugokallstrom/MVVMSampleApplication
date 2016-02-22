@@ -6,5 +6,9 @@
     android:layout_height="match_parent"
     android:id="@+id/content_activity_search_user">
 
+    <fragment class="com.hugo.mvvmsampleapplication.features.searchuser.SearchUserFragment"
+        android:id="@+id/searchUserFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

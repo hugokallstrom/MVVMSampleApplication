@@ -5,7 +5,7 @@
 
     <data>
         <variable name="viewModel"
-                  type="com.hugo.mvvmsampleapplication.view.viewmodel.SearchUserViewModel" />
+                  type="com.hugo.mvvmsampleapplication.features.searchuser.SearchUserViewModel" />
     </data>
 
     <RelativeLayout
