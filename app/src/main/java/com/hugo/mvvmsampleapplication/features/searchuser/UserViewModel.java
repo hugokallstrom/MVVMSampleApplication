@@ -28,7 +28,7 @@ public class UserViewModel extends BaseObservable {
 
   @BindingAdapter({ "bind:imageUrl" })
   public static void loadImage(ImageView view, String imageUrl) {
-    Picasso.with(view.getContext()).load(imageUrl).placeholder(R.drawable.placeholder).into(view);
+    Picasso.with(view.getContext()).load(imageUrl).placeholder(R.drawable.placeholder).fit().into(view);
   }
 
   public void setUser(User user) {

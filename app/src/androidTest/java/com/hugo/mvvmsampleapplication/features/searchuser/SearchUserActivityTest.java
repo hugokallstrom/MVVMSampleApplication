@@ -1,43 +1,40 @@
 package com.hugo.mvvmsampleapplication.features.searchuser;
 
-import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.suitebuilder.annotation.LargeTest;
+import com.hugo.mvvmsampleapplication.MockFactory;
+import com.hugo.mvvmsampleapplication.R;
+import com.hugo.mvvmsampleapplication.app.MVVMApplication;
+import com.hugo.mvvmsampleapplication.model.entities.User;
+import com.hugo.mvvmsampleapplication.model.network.GitHubService;
+import com.hugo.mvvmsampleapplication.model.network.SearchResponse;
+import com.hugo.mvvmsampleapplication.util.dependencyinjection.components.ApplicationComponent;
+import com.hugo.mvvmsampleapplication.util.dependencyinjection.modules.ApplicationModule;
+import it.cosenonjaviste.daggermock.DaggerMockRule;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import retrofit.HttpException;
+import retrofit.Response;
+import rx.Observable;
 
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.Espresso.onView;
-
-import android.test.suitebuilder.annotation.LargeTest;
-import com.hugo.mvvmsampleapplication.MockFactory;
-import com.hugo.mvvmsampleapplication.R;
-import com.hugo.mvvmsampleapplication.app.MVVMApplication;
-import com.hugo.mvvmsampleapplication.dependencyinjection.testcomponent.TestApplicationComponent;
-import com.hugo.mvvmsampleapplication.dependencyinjection.testmodule.TestApplicationModule;
-import com.hugo.mvvmsampleapplication.model.network.GitHubService;
-import com.hugo.mvvmsampleapplication.util.dependencyinjection.components.ApplicationComponent;
-import com.hugo.mvvmsampleapplication.util.dependencyinjection.modules.ApplicationModule;
-import it.cosenonjaviste.daggermock.DaggerMockRule;
-import javax.inject.Inject;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import rx.Observable;
-
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.hugo.mvvmsampleapplication.OrientationChangeAction.orientationLandscape;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
@@ -78,10 +75,9 @@ public class SearchUserActivityTest {
         Observable.just(MockFactory.buildMockUserDetailsResponse()));
     when(mockGitHubService.searchUser(MockFactory.TEST_USERNAME_NO_RESULTS)).thenReturn(
         Observable.just(MockFactory.buildEmptyMockSearchResponse()));
-    Observable error = Observable.error(new Throwable("Error"));
-    when(mockGitHubService.searchUser(MockFactory.TEST_USERNAME_ERROR)).thenReturn(error);
-    when(mockGitHubService.getRepositoriesFromUser(MockFactory.TEST_USERNAME_ERROR)).thenReturn(
-        error);
+
+    HttpException mockHttpException = new HttpException(Response.error(404, null));
+    when(mockGitHubService.searchUser(MockFactory.TEST_USERNAME_ERROR)).thenReturn(Observable.<SearchResponse>error(mockHttpException));
   }
 
   @Test
@@ -92,10 +88,17 @@ public class SearchUserActivityTest {
   }
 
   @Test
-  public void networkErrorShouldBeDisplayedInDialog() throws Exception {
+  public void shouldDisplayNetworkErrorInSnackBar() throws Exception {
     performSearch(MockFactory.TEST_USERNAME_ERROR);
-    onView(allOf(withId(android.support.design.R.id.snackbar_text),
-        withText("Error loading users"))).check(matches(isDisplayed()));
+    onView(withId(android.support.design.R.id.snackbar_text)).check(
+        matches(withText("Error loading users")));
+  }
+
+  @Test
+  public void shouldDisplayNoUserErrorInSnackBar() throws Exception {
+    performSearch(MockFactory.TEST_USERNAME_NO_RESULTS);
+    onView(withId(android.support.design.R.id.snackbar_text)).check(
+        matches(withText("No users found")));
   }
 
   @Test
@@ -118,19 +121,14 @@ public class SearchUserActivityTest {
   }
 
   @Test
-  public void searchQueryTextShouldPersistDuringOrientationChange() throws Exception {
+  public void searchQueryTextShouldPersistAfterOrientationChange() throws Exception {
     onView(withId(R.id.edit_text_username)).perform(typeText("test"));
     onView(isRoot()).perform(orientationLandscape());
     onView(withId(R.id.edit_text_username)).check(matches(withText("test")));
   }
 
   @Test
-  public void shouldDisplayProgressIndicatorAfterOrientationChange() throws Exception {
-    // TODO: how to test?
-  }
-
-  @Test
-  public void shouldDisplayResultsInNewConfigurationAfterLoading() throws Exception {
+  public void searchResultsShouldPersistAfterOrientationChange() throws Exception {
     performSearch(MockFactory.TEST_USERNAME);
     onView(isRoot()).perform(orientationLandscape());
     onView(withId(R.id.search_user_list)).check(matches(isDisplayed()));
@@ -140,6 +138,4 @@ public class SearchUserActivityTest {
     onView(withId(R.id.edit_text_username)).perform(typeText(query));
     onView(withId(R.id.button_search)).perform(click());
   }
-
-  //TODO: no way of checking if soft keyboard is visible?
 }

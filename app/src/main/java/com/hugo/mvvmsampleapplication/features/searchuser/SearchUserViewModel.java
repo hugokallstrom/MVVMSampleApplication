@@ -12,15 +12,18 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.hugo.mvvmsampleapplication.R;
+import com.hugo.mvvmsampleapplication.app.MVVMApplication;
 import com.hugo.mvvmsampleapplication.features.UseCase;
 import com.hugo.mvvmsampleapplication.model.entities.User;
 import com.hugo.mvvmsampleapplication.features.DefaultSubscriber;
 import com.hugo.mvvmsampleapplication.model.network.SearchResponse;
 
 import com.hugo.mvvmsampleapplication.util.dependencyinjection.PerActivity;
+import com.squareup.leakcanary.RefWatcher;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
+import rx.Subscriber;
 
 /**
  * Bound to the view search_user.xml. All user interactions are handled by this class and updates
@@ -32,8 +35,6 @@ import javax.inject.Named;
  */
 @PerActivity
 public class SearchUserViewModel extends BaseObservable {
-
-  private static final String TAG = "SearchUserViewModel";
 
   public final ObservableInt progressVisibility;
   public final ObservableInt userListVisibility;
@@ -104,17 +105,20 @@ public class SearchUserViewModel extends BaseObservable {
     public void onError(Throwable e) {
       showProgressIndicator(false);
       fragmentListener.showMessage("Error loading users");
-      e.printStackTrace();
     }
 
     @Override
     public void onNext(SearchResponse searchResponse) {
       List<User> users = searchResponse.getUsers();
-      fragmentListener.addUsers(users);
+      if (users.isEmpty()) {
+        fragmentListener.showMessage("No users found");
+      } else {
+        fragmentListener.addUsers(users);
+      }
     }
   }
 
-  public void showProgressIndicator(boolean showProgress) {
+  private void showProgressIndicator(boolean showProgress) {
     if(showProgress) {
       progressVisibility.set(View.VISIBLE);
       userListVisibility.set(View.INVISIBLE);
@@ -124,9 +128,11 @@ public class SearchUserViewModel extends BaseObservable {
     }
   }
 
-  public void destroy() {
+  public void destroy(Boolean unsubsricbe) {
     fragmentListener = null;
-    searchUserUseCase.unsubscribe();
+    if(unsubsricbe) {
+      searchUserUseCase.unsubscribe();
+    }
   }
 
   public void setUsername(String username) {

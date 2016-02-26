@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.hugo.mvvmsampleapplication.R;
+import com.hugo.mvvmsampleapplication.app.MVVMApplication;
 import com.hugo.mvvmsampleapplication.features.BaseActivity;
+import com.squareup.leakcanary.RefWatcher;
 
 public class UserDetailsActivity extends BaseActivity {
 

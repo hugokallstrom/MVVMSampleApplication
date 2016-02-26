@@ -18,7 +18,7 @@ public class LoadUserDetailsUseCase extends UseCase {
     super(gitHubService, threadExecutor, postExecutionThread);
   }
 
-  @Override public Observable buildUseCase(String username) {
+  @Override public Observable buildUseCase(String username) throws NullPointerException {
     if (username == null) {
       throw new NullPointerException("Username must not be null");
     }

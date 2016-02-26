@@ -57,16 +57,20 @@ public class UserDetailsViewModel {
     @Override
     public void onError(Throwable e) {
       showProgressIndicator(false);
-      e.printStackTrace();
+      fragmentListener.showMessage("Error loading repositories");
     }
 
     @Override
     public void onNext(List<Repository> repositories) {
-      fragmentListener.addRepositories(repositories);
+      if (repositories.isEmpty()) {
+        fragmentListener.showMessage("No public repositories");
+      } else {
+        fragmentListener.addRepositories(repositories);
+      }
     }
   }
 
-  public void showProgressIndicator(boolean showProgress) {
+  private void showProgressIndicator(boolean showProgress) {
     if (showProgress) {
       progressVisibility.set(View.VISIBLE);
       repoListVisibility.set(View.INVISIBLE);
@@ -76,9 +80,11 @@ public class UserDetailsViewModel {
     }
   }
 
-  public void destroy() {
+  public void destroy(Boolean unsubscribe) {
     fragmentListener = null;
-    loadUserDetailsUseCase.unsubscribe();
+    if (unsubscribe) {
+      loadUserDetailsUseCase.unsubscribe();
+    }
   }
 
   public ObservableInt getProgressVisibility() {
@@ -91,5 +97,7 @@ public class UserDetailsViewModel {
 
   public interface FragmentListener {
     void addRepositories(List<Repository> repositories);
+
+    void showMessage(String message);
   }
 }

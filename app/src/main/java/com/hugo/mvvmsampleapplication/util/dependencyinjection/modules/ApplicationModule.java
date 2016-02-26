@@ -20,13 +20,7 @@ public class ApplicationModule {
   public ApplicationModule() {
 
   }
-/*
-  @Provides
-  @Singleton
-  public Context provideApplicationContext() {
-    return this.application;
-  }
-*/
+
   @Provides
   @Singleton
   public GitHubService provideGitHubService() {

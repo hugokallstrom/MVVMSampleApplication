@@ -12,7 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Adapter for the list displayed in search_user.xml. This adapter uses the {@link UserViewModel} to
+ * Adapter for the list displayed in search_user.xml. This adapter uses the {@link UserViewModel}
+ * to
  * bind
  * data to the view. The onClickListener needs to be handled by this adapter (not the
  * UserViewModel) in order to communicate with the {@link SearchUserFragment} which in turn calls
@@ -39,18 +40,20 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
     this.onItemClickListener = onItemClickListener;
   }
 
-  @Override public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  @Override
+  public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     final ItemUserBinding binding =
-        DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_user,
-            parent, false);
+        ItemUserBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
     return new UserViewHolder(binding);
   }
 
-  @Override public void onBindViewHolder(UserViewHolder holder, int position) {
+  @Override
+  public void onBindViewHolder(UserViewHolder userViewHolder, int position) {
     final User user = users.get(position);
-    holder.bindUser(user);
-    holder.itemView.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+    userViewHolder.bindUser(user);
+    userViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
         if (onItemClickListener != null) {
           onItemClickListener.onItemClick(user.getLogin());
         }
@@ -58,7 +61,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
     });
   }
 
-  @Override public int getItemCount() {
+  @Override
+  public int getItemCount() {
     return users.size();
   }
 
@@ -66,13 +70,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
     final ItemUserBinding binding;
 
     public UserViewHolder(ItemUserBinding binding) {
-      super(binding.cardView);
+      super(binding.getRoot());
       this.binding = binding;
     }
 
     void bindUser(User user) {
       if (binding.getViewModel() == null) {
         binding.setViewModel(new UserViewModel(user));
+        binding.executePendingBindings();
       } else {
         binding.getViewModel().setUser(user);
       }

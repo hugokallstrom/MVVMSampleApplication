@@ -4,6 +4,7 @@ import com.hugo.mvvmsampleapplication.model.entities.Repository;
 import com.hugo.mvvmsampleapplication.model.entities.User;
 import com.hugo.mvvmsampleapplication.model.network.SearchResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import rx.Observable;
 
@@ -67,9 +68,14 @@ public class MockFactory {
   }
 
   public static SearchResponse buildEmptyMockSearchResponse() {
-    ArrayList<User> users = new ArrayList<>(0);
+    List<User> users = Collections.emptyList();
     SearchResponse searchResponse = new SearchResponse();
     searchResponse.setUsers(users);
     return searchResponse;
+  }
+
+  public static List<Repository> buildEmptyRepositoryList() {
+    ArrayList<Repository> repositories = new ArrayList<>();
+    return repositories;
   }
 }

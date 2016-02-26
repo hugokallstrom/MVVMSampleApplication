@@ -1,14 +1,11 @@
 package com.hugo.mvvmsampleapplication.features;
 
 import com.hugo.mvvmsampleapplication.model.network.GitHubService;
-
 import com.hugo.mvvmsampleapplication.util.PostExecutionThread;
 import com.hugo.mvvmsampleapplication.util.ThreadExecutor;
-import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
 /**
@@ -38,11 +35,11 @@ public abstract class UseCase {
 
   public abstract Observable buildUseCase(String query);
 
-  @SuppressWarnings("unchecked") public void execute(Subscriber useCaseSubscriber, String query) {
+  @SuppressWarnings("unchecked")
+  public void execute(Subscriber useCaseSubscriber, String query) {
     subscription = buildUseCase(query)
         .observeOn(postExecutionThread.getScheduler())
         .subscribeOn(threadExecutor.getScheduler())
-        .unsubscribeOn(Schedulers.newThread())
         .subscribe(useCaseSubscriber);
   }
 

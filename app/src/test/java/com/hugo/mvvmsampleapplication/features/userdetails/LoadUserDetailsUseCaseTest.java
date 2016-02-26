@@ -17,6 +17,7 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,7 +25,8 @@ import static org.mockito.Mockito.when;
 /**
  * Created by hugo on 2/15/16.
  */
-@RunWith(MockitoJUnitRunner.class) public class LoadUserDetailsUseCaseTest {
+@RunWith(MockitoJUnitRunner.class)
+public class LoadUserDetailsUseCaseTest {
 
   @Mock private GitHubService gitHubService;
   @Mock private PostExecutionThread mockPostExecutionThread;
@@ -32,7 +34,8 @@ import static org.mockito.Mockito.when;
 
   private LoadUserDetailsUseCase loadUserDetailsUseCase;
 
-  @Before public void setUp() {
+  @Before
+  public void setUp() {
     MockitoAnnotations.initMocks(this);
     when(mockPostExecutionThread.getScheduler()).thenReturn(Schedulers.immediate());
     when(mockThreadExecutor.getScheduler()).thenReturn(Schedulers.immediate());
@@ -43,7 +46,8 @@ import static org.mockito.Mockito.when;
         new LoadUserDetailsUseCase(gitHubService, mockThreadExecutor, mockPostExecutionThread);
   }
 
-  @Test public void buildUseCaseShouldGetReposFromUser() throws Exception {
+  @Test
+  public void buildUseCaseShouldGetRepositoriesFromUser() throws Exception {
     loadUserDetailsUseCase.buildUseCase(MockFactory.TEST_USERNAME);
     verify(gitHubService).getRepositoriesFromUser(MockFactory.TEST_USERNAME);
   }
@@ -53,12 +57,13 @@ import static org.mockito.Mockito.when;
     loadUserDetailsUseCase.buildUseCase(null);
   }
 
-  @Test public void executeShouldReturnRepositoryList() {
+  @Test
+  public void executeShouldReturnRepositoryList() {
     TestSubscriber<Repository> testSubscriber = new TestSubscriber<>();
     loadUserDetailsUseCase.execute(testSubscriber, MockFactory.TEST_USERNAME);
     testSubscriber.assertCompleted();
     testSubscriber.assertNoErrors();
     List<Repository> searchResponseList = testSubscriber.getOnNextEvents();
-    Assert.assertEquals(1, searchResponseList.size());
+    assertEquals(1, searchResponseList.size());
   }
 }

@@ -18,7 +18,8 @@ public class SearchUserUseCase extends UseCase {
     super(gitHubService, threadExecutor, postExecutionThread);
   }
 
-  @Override public Observable buildUseCase(String username) throws NullPointerException {
+  @Override
+  public Observable buildUseCase(String username) throws NullPointerException {
     if (username == null) {
       throw new NullPointerException("Query must not be null");
     }

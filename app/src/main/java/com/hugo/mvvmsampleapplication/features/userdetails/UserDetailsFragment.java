@@ -2,6 +2,7 @@ package com.hugo.mvvmsampleapplication.features.userdetails;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.hugo.mvvmsampleapplication.features.BaseActivity;
 import com.hugo.mvvmsampleapplication.features.searchuser.SearchUserViewModel;
 import com.hugo.mvvmsampleapplication.model.entities.Repository;
 
+import com.squareup.leakcanary.RefWatcher;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -26,13 +28,14 @@ import javax.inject.Inject;
  */
 public class UserDetailsFragment extends Fragment implements UserDetailsViewModel.FragmentListener {
 
-  private static final String EXTRA_USERNAME = "username";
+  private static final String EXTRA_USERNAME = "USERNAME";
 
   @Inject UserDetailsViewModel userDetailsViewModel;
   private UserDetailsBinding binding;
   private RepositoriesAdapter userDetailsAdapter;
 
   public UserDetailsFragment() {
+
   }
 
   public static UserDetailsFragment newInstance(String username) {
@@ -58,7 +61,7 @@ public class UserDetailsFragment extends Fragment implements UserDetailsViewMode
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    binding = DataBindingUtil.inflate(inflater, R.layout.user_details, container, false);
+    binding = UserDetailsBinding.inflate(inflater, container, false);
     binding.setViewModel(userDetailsViewModel);
     setupRepositoriesList(binding.repositoriesList);
     return binding.getRoot();
@@ -84,8 +87,21 @@ public class UserDetailsFragment extends Fragment implements UserDetailsViewMode
   }
 
   @Override
+  public void showMessage(String message) {
+    View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+    Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT);
+    snackbar.show();
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    userDetailsViewModel.destroy(false);
+  }
+
+  @Override
   public void onDestroy() {
     super.onDestroy();
-    userDetailsViewModel.destroy();
+    userDetailsViewModel.destroy(true);
   }
 }

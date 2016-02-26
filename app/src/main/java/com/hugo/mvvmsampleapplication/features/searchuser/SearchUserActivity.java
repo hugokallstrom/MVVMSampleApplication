@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import com.hugo.mvvmsampleapplication.R;
+import com.hugo.mvvmsampleapplication.app.MVVMApplication;
 import com.hugo.mvvmsampleapplication.features.BaseActivity;
 import com.hugo.mvvmsampleapplication.features.userdetails.UserDetailsActivity;
 import com.hugo.mvvmsampleapplication.features.userdetails.UserDetailsFragment;
@@ -11,6 +12,7 @@ import com.hugo.mvvmsampleapplication.util.dependencyinjection.components.Dagger
 import com.hugo.mvvmsampleapplication.util.dependencyinjection.components.DaggerUserComponent;
 import com.hugo.mvvmsampleapplication.util.dependencyinjection.components.UserComponent;
 import com.hugo.mvvmsampleapplication.util.dependencyinjection.modules.UserModule;
+import com.squareup.leakcanary.RefWatcher;
 
 /**
  * Sets the content view to activity_search_user which host SearchUserFragment and/or
@@ -28,6 +30,9 @@ public class SearchUserActivity extends BaseActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search_user);
+    if (savedInstanceState == null) {
+      addFragment(R.id.content_activity_search_user, SearchUserFragment.newInstance());
+    }
   }
 
   @Override

@@ -6,12 +6,15 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.hugo.mvvmsampleapplication.app.MVVMApplication;
 import com.hugo.mvvmsampleapplication.databinding.SearchUserBinding;
 import com.hugo.mvvmsampleapplication.features.BaseActivity;
 import com.hugo.mvvmsampleapplication.model.entities.User;
+import com.squareup.leakcanary.RefWatcher;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -34,6 +37,7 @@ public class SearchUserFragment extends Fragment implements SearchUserViewModel.
   }
 
   public SearchUserFragment() {
+
   }
 
   public static SearchUserFragment newInstance() {
@@ -53,13 +57,13 @@ public class SearchUserFragment extends Fragment implements SearchUserViewModel.
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
     ((BaseActivity)getActivity()).getUserComponent().inject(this);
-    searchUserViewModel.setFragmentListener(this);
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    binding = SearchUserBinding.inflate(inflater);
+    searchUserViewModel.setFragmentListener(this);
+    binding = SearchUserBinding.inflate(inflater, container, false);
     binding.setViewModel(searchUserViewModel);
     setupUserList(binding.searchUserList);
     return binding.getRoot();
@@ -86,7 +90,7 @@ public class SearchUserFragment extends Fragment implements SearchUserViewModel.
 
   @Override
   public void addUsers(List<User> users) {
-    UserListAdapter userListAdapter = (UserListAdapter) binding.searchUserList.getAdapter();
+    userListAdapter = (UserListAdapter) binding.searchUserList.getAdapter();
     userListAdapter.setUsers(users);
     userListAdapter.notifyDataSetChanged();
   }
@@ -99,8 +103,22 @@ public class SearchUserFragment extends Fragment implements SearchUserViewModel.
   }
 
   @Override
+  public void onDetach() {
+    super.onDetach();
+    activityListener = null;
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    Log.d(TAG, "onDestroyView: destroyed");
+    searchUserViewModel.destroy(false);
+    binding.unbind();
+  }
+
+  @Override
   public void onDestroy() {
     super.onDestroy();
-    searchUserViewModel.destroy();
+    searchUserViewModel.destroy(true);
   }
 }

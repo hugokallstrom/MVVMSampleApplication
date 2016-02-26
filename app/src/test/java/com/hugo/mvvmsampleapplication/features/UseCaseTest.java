@@ -17,6 +17,8 @@ import rx.Subscription;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -47,12 +49,12 @@ public class UseCaseTest {
   @Test
   public void buildUseCaseShouldReturnObservable() throws Exception {
     Observable observable = useCase.buildUseCase(MockFactory.TEST_USERNAME);
-    Assert.assertNotNull(observable);
+    assertNotNull(observable);
   }
   @Test
   public void getGitHubServiceShouldNotReturnNull() throws Exception {
     GitHubService gitHubService = useCase.getGitHubService();
-    org.junit.Assert.assertNotNull(gitHubService);
+    assertNotNull(gitHubService);
   }
 
   @Test
@@ -61,6 +63,6 @@ public class UseCaseTest {
     useCase.execute(testSubscriber, MockFactory.TEST_USERNAME);
     useCase.unsubscribe();
     Subscription subscription = useCase.getSubscription();
-    org.junit.Assert.assertEquals(true, subscription.isUnsubscribed());
+    assertEquals(true, subscription.isUnsubscribed());
   }
 }
