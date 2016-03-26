@@ -37,7 +37,7 @@ public class SearchUserFragment extends Fragment implements SearchUserViewModel.
   }
 
   public SearchUserFragment() {
-
+    super();
   }
 
   public static SearchUserFragment newInstance() {
@@ -111,9 +111,10 @@ public class SearchUserFragment extends Fragment implements SearchUserViewModel.
   @Override
   public void onDestroyView() {
     super.onDestroyView();
-    Log.d(TAG, "onDestroyView: destroyed");
     searchUserViewModel.destroy(false);
     binding.unbind();
+  //  binding.executePendingBindings();
+  //  binding.invalidateAll();
   }
 
   @Override

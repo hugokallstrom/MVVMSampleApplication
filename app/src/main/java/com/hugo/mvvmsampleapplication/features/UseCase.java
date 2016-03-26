@@ -3,6 +3,7 @@ package com.hugo.mvvmsampleapplication.features;
 import com.hugo.mvvmsampleapplication.model.network.GitHubService;
 import com.hugo.mvvmsampleapplication.util.PostExecutionThread;
 import com.hugo.mvvmsampleapplication.util.ThreadExecutor;
+import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;

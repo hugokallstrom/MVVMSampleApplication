@@ -51,7 +51,6 @@ public class UserDetailsFragment extends Fragment implements UserDetailsViewMode
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
     ((BaseActivity)getActivity()).getUserComponent().inject(this);
-    userDetailsViewModel.setFragmentListener(this);
     if (getArguments() != null) {
       String username = getArguments().getString(EXTRA_USERNAME);
       userDetailsViewModel.loadRepositories(username);
@@ -61,6 +60,7 @@ public class UserDetailsFragment extends Fragment implements UserDetailsViewMode
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
+    userDetailsViewModel.setFragmentListener(this);
     binding = UserDetailsBinding.inflate(inflater, container, false);
     binding.setViewModel(userDetailsViewModel);
     setupRepositoriesList(binding.repositoriesList);
